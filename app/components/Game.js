@@ -227,22 +227,35 @@ function Game({ mode }) {
     }
   }, [state.darkMode]);
 
-  // For daily mode: load stored game state if it exists and is for today.
   useEffect(() => {
-    if (mode === 'daily') {
-      const stored = localStorage.getItem('dailyGameState');
-      const storedDate = localStorage.getItem('dailyGameDate');
+    if (mode === "daily") {
+      const storedDate = localStorage.getItem("dailyGameDate");
+      const storedWord = localStorage.getItem("dailyGameWord");
       const today = new Date().toDateString();
-      if (stored && storedDate === today) {
-        try {
-          const loadedState = JSON.parse(stored);
-          dispatch({ type: 'LOAD_STATE', payload: { ...loadedState, darkMode: state.darkMode } });
-        } catch (err) {
-          console.error('Failed to load daily game state', err);
-        }
-      }
+      
+      fetch("/api/daily-word")
+        .then((res) => res.json())
+        .then((data) => {
+          const dailyWord = data.word.toUpperCase();
+  
+          // If it's a new day or the stored word is different, reset state
+          if (storedDate !== today || storedWord !== dailyWord) {
+            localStorage.setItem("dailyGameDate", today);
+            localStorage.setItem("dailyGameWord", dailyWord);
+            localStorage.removeItem("dailyGameState"); // Clear previous state
+            dispatch({ type: "RESET_GAME", payload: { solution: dailyWord } });
+          } else {
+            // Load existing state if the word hasn't changed
+            const storedState = localStorage.getItem("dailyGameState");
+            if (storedState) {
+              dispatch({ type: "LOAD_STATE", payload: JSON.parse(storedState) });
+            }
+          }
+        })
+        .catch((err) => console.error("Error fetching daily word:", err));
     }
   }, [mode]);
+  
 
   // Save daily game state when game is over in daily mode.
   useEffect(() => {
