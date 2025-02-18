@@ -1,3 +1,7 @@
+
+![SetWord](https://github.com/user-attachments/assets/ba24982f-ecfb-4237-9763-d741ae0ba440)
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
@@ -8,7 +12,8 @@ First, run the development server:
 npm run dev
 # or
 yarn dev
-# or
+# or![Uploading SetWord.jpg…]()
+
 pnpm dev
 # or
 bun dev
